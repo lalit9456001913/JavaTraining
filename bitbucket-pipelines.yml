@@ -1,0 +1,21 @@
+image: openjdk:17-alpine
+
+pipelines:
+  default:
+    - step:
+        name: Build and Test Api
+        script:
+          - apk add postgresql-client
+          - ./create-db.sh
+          - ./create-test-db.sh
+          - ./gradlew build jacocoTestReport sonar
+        services:
+          - postgres
+
+definitions:
+  services:
+    postgres:
+      image: postgres:latest
+      variables:
+        POSTGRES_USER: "root"
+        POSTGRES_PASSWORD: "root"
